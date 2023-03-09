@@ -6,10 +6,10 @@ const xbusqueda = document.getElementById('barra-busqueda')
 function crearCategorias (elementoCategoria, iterador){
     return `
     <div class="input-group mb-0 d-flex flex-row align-items-center">
-    <div class="">
-    <input class="form-check-input mt-0" type="checkbox" value="${elementoCategoria[iterador]}" aria-label="Checkbox for following text input" style="width: 1.5rem; height: 1.5rem;">
-    </div>
-    <p class="ms-0" style="margin: 0; text-align: center; width: 5rem;">${elementoCategoria[iterador]}</p>
+        <div class="">
+            <input class="form-check-input mt-0" type="checkbox" value="${elementoCategoria[iterador]}" aria-label="Checkbox for following text input" style="width: 1.5rem; height: 1.5rem;">
+        </div>
+        <p class="ms-0" style="margin: 0; text-align: center; width: 5rem;">${elementoCategoria[iterador]}</p>
     </div>
     `
 }
@@ -102,12 +102,12 @@ function filtroCruzado(){
 function crearTarjetaConInner( elementoTarjeta ){
     return `
     <div class="card" style="width: 18rem; height: 23rem;">
-    <img src="${elementoTarjeta.image}" class="card-img-top" alt="imagen-${elementoTarjeta.name}" style="height: 10rem;">
-    <div class="card-body d-flex justify-content-end gap-2 flex-column">
-    <h5 class="card-title">${elementoTarjeta.name}</h5>
-    <p class="card-text">${elementoTarjeta.description}</p>
-    <a href="./details.html?id=${elementoTarjeta._id}&${elementoTarjeta.name}" class="btn btn-primary">Check it</a>
-    </div>
+        <img src="${elementoTarjeta.image}" class="card-img-top" alt="imagen-${elementoTarjeta.name}" style="height: 10rem;">
+        <div class="card-body d-flex justify-content-end gap-2 flex-column">
+            <h5 class="card-title">${elementoTarjeta.name}</h5>
+            <p class="card-text">${elementoTarjeta.description}</p>
+            <a href="./details.html?id=${elementoTarjeta._id}&${elementoTarjeta.name}" class="btn btn-primary">Check it</a>
+        </div>
     </div>
     ` 
 }
