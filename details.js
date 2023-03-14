@@ -1,10 +1,21 @@
 const container = document.getElementById('caja-main-details')
-console.log([document])
+// ----------------------------------- API MindHub -----------------------------------
+const url = 'https://mindhub-xj03.onrender.com/api/amazing'
 
+let bgData = []
 const params = new URLSearchParams(location.search)
 const id = params.get("id")
 
-let evento = data.events.find(element => element._id === id)
+let evento
+fetch(url)
+    .then(res => res.json())
+    .then(json => {
+        bgData = json
+        evento = bgData.events.find(element => element._id == id)
+        renderCard(evento, container)
+    })
+
+
 
 function createCard(obj){
     return `
@@ -24,4 +35,3 @@ function renderCard(obj, element){
     template += createCard(obj)
     element.innerHTML = template
 }
-renderCard(evento, container)

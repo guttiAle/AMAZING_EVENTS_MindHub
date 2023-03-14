@@ -1,6 +1,21 @@
 const xcaja = document.getElementById( 'caja-main' )
 const xcategoria = document.getElementById( 'div-filtros' )
 const xbusqueda = document.getElementById('barra-busqueda')
+// ----------------------------------- API MindHub -----------------------------------
+const url = 'https://mindhub-xj03.onrender.com/api/amazing'
+let bgData = []
+let checks 
+let listaEventosFuturos
+fetch(url)
+    .then(res => res.json())
+    .then(json => {
+    bgData = json
+    quitarRepetidos(bgData),
+    pintarTarjetas( filtrador(bgData), xcaja  ),
+    checks = document.querySelectorAll('.form-check-input')
+    listaEventosFuturos = filtrador(bgData)
+    })
+
 // ----------------------------------- CREADO DE CATEGORIAS -----------------------------------
 
 function crearCategorias (elementoCategoria, iterador){
@@ -31,12 +46,11 @@ function quitarRepetidos( listaData ){
     pintarCategorias(arr, xcategoria)
 }
 
-quitarRepetidos(data)
 
 // ----------------------------------- CREADO Y FILTRADO DE TARJETAS -----------------------------------
 function crearTarjetaConInner( elementoTarjeta ){
     return `
-<div class="card" style="width: 18rem; height: 23rem;">
+<div class="card" style="width: 18rem; height: 25rem;">
     <img src="${elementoTarjeta.image}" class="card-img-top" alt="imagen-${elementoTarjeta.name}" style="height: 10rem;">
     <div class="card-body d-flex justify-content-end gap-2 flex-column">
         <h5 class="card-title">${elementoTarjeta.name}</h5>
@@ -52,32 +66,20 @@ function pintarTarjetas( listaData, elemento ){
     if (listaData.length == 0){
         template += `<h1>No matches found</h1>`
     } else {
-        try {
-            for (let i of listaData){
-                if (i.category){
-                    template += crearTarjetaConInner( i )
-                }
+        for (let i of listaData){
+            if (i.category){
+                template += crearTarjetaConInner( i )
             }
-            } catch (err) {
-                template += `<h1>No matches found</h1>`
-            }
+        }
     }
     elemento.innerHTML = template
 }
 
 function filtrador(lista){
-    eventosFuturos = []
-    for ( let q of lista.events){
-        if(q.date > lista.currentDate){
-            eventosFuturos.push(q)
-        }
-    }
+    let eventosFuturos = lista.events.filter(datum  => datum.date > lista.currentDate)
     return eventosFuturos
 }
 // ------------------------------------------ FILTRADO POR CATEGORIAS ---------------------------------------------------
-
-let checks = document.querySelectorAll('.form-check-input')
-pintarTarjetas(filtrador(data), xcaja)
 
 let mySet = new Set()
 
@@ -96,14 +98,14 @@ function llamadorCategorias(listaBusqueda){
 }
 function comparadorDeCategorias(listaCat, listaRecibida, contador){
     let listaComparadora = []
+    if (contador == 0){
+        return listaRecibida
+    } else {
     for (let i = 0; i < listaRecibida.length; i++){
         if ( listaCat.includes(listaRecibida[i].category)){
             listaComparadora.push(listaRecibida[i])
         }
     }
-    if (contador == 0 && listaComparadora.length == 0){
-        return listaRecibida
-    } else {
         return listaComparadora
     }
 }
@@ -112,7 +114,7 @@ function comparadorDeCategorias(listaCat, listaRecibida, contador){
 
 let mySet2 = new Set()
 function comparadorDeBusqueda(){
-    let listaEventosFuturos = filtrador(data)
+    
     let stringBusqueda = xbusqueda.value
     for (let i = 0; i < listaEventosFuturos.length; i++){
         if (((listaEventosFuturos[i].name).toLowerCase()).includes(stringBusqueda.toLowerCase())){

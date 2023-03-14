@@ -1,6 +1,20 @@
 const xcaja = document.getElementById( 'caja-main' )
 const xcategoria = document.getElementById( 'div-filtros' )
 const xbusqueda = document.getElementById('barra-busqueda')
+// ----------------------------------- API MindHub -----------------------------------
+const url = 'https://mindhub-xj03.onrender.com/api/amazing'
+let bgData = []
+let checks 
+fetch(url)
+    .then(res => res.json())
+    .then(json => {
+    bgData = json
+    quitarRepetidos(bgData),
+    pintarTarjetas( bgData.events, xcaja  ),
+    checks = document.querySelectorAll('.form-check-input')
+    })
+
+
 // ----------------------------------- CREADO DE CATEGORIAS -----------------------------------
 
 function crearCategorias (elementoCategoria, iterador){
@@ -31,14 +45,10 @@ function quitarRepetidos( listaData ){
     pintarCategorias(arr, xcategoria)
 }
 
-quitarRepetidos(data)
+
 // ------------------------------------------ FILTRADO POR CATEGORIAS ---------------------------------------------------
 
-let checks = document.querySelectorAll('.form-check-input')
-pintarTarjetas(data.events, xcaja)
-
 let mySet = new Set()
-
 function llamadorCategorias(listaBusqueda){
     let contador = 0
     checks.forEach((e)=>{
@@ -55,14 +65,14 @@ function llamadorCategorias(listaBusqueda){
 
 function comparadorDeCategorias(listaCat, listaRecibida, contador){
     let listaComparadora = []
+    if (contador == 0){
+        return listaRecibida
+    } else {
     for (let i = 0; i < listaRecibida.length; i++){
         if ( listaCat.includes(listaRecibida[i].category)){
             listaComparadora.push(listaRecibida[i])
         }
     }
-    if (contador == 0 && listaComparadora.length == 0){
-        return listaRecibida
-    } else {
         return listaComparadora
     }
 }
@@ -72,11 +82,11 @@ function comparadorDeCategorias(listaCat, listaRecibida, contador){
 let mySet2 = new Set()
 function comparadorDeBusqueda(){
     let stringBusqueda = xbusqueda.value
-    for (let i = 0; i < data.events.length; i++){
-        if (((data.events[i].name).toLowerCase()).includes(stringBusqueda.toLowerCase())){
-            mySet2.add(data.events[i])
+    for (let i = 0; i < bgData.events.length; i++){
+        if (((bgData.events[i].name).toLowerCase()).includes(stringBusqueda.toLowerCase())){
+            mySet2.add(bgData.events[i])
         } else {
-            mySet2.delete(data.events[i])
+            mySet2.delete(bgData.events[i])
         }
     }
     let listaCategoriasBusqueda = Array.from(mySet2)
@@ -101,7 +111,7 @@ function filtroCruzado(){
 
 function crearTarjetaConInner( elementoTarjeta ){
     return `
-    <div class="card" style="width: 18rem; height: 23rem;">
+    <div class="card" style="width: 18rem; height: 25rem;">
         <img src="${elementoTarjeta.image}" class="card-img-top" alt="imagen-${elementoTarjeta.name}" style="height: 10rem;">
         <div class="card-body d-flex justify-content-end gap-2 flex-column">
             <h5 class="card-title">${elementoTarjeta.name}</h5>
@@ -117,15 +127,11 @@ function pintarTarjetas( listaData, elemento ){
     if (listaData.length == 0){
         template += `<h1>No matches found</h1>`
     } else {
-        try {
-            for (let i of listaData){
-                if (i.category){
-                    template += crearTarjetaConInner( i )
-                }
+        for (let i of listaData){
+            if (i.category){
+                template += crearTarjetaConInner( i )
             }
-            } catch (err) {
-                template += `<h1>No matches found</h1>`
-            }
+        }
     }
     elemento.innerHTML = template
 }
